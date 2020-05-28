@@ -2,10 +2,20 @@ import React  from "react";
 import ReactDOM from "react-dom";
 import "./index.css"
 class Square extends React.Component{
-    render(){
+    constructor(args){
+        /**
+         * 通过父类构造
+         */
+        super(args);  
+        this.state={
+            value:this.props.value /**构造时，创建状态state并存储props传递的参数 */
+        }
+    }
+    render(){        
         return (
-            <button className="square">
-                {this.props.value} { /*使用props接收的参数*/}                      
+            <button className="square" onClick={()=>{this.setState({value:"X"})}}>
+                {/*当点击是，修改state状态 */}
+                {this.state.value} { /*使用state显示数据*/}                      
             </button>
         )
     }
