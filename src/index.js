@@ -4,15 +4,17 @@ import "./index.css"
 class Square extends React.Component{
     render(){
         return (
-            <button className="square">                          
+            <button className="square">
+                {this.props.value} { /*使用props接收的参数*/}                      
             </button>
         )
     }
 }
 class Board extends React.Component{
-    renderSquare(){
+    renderSquare(index){
         return (
-            <Square/>
+            <Square value={index}/> 
+            /*这里通过props方式传递参数value*/
         )
     }
     render(){
@@ -21,19 +23,19 @@ class Board extends React.Component{
             <div>
                 <div className="status">{status}</div>
                 <div className="board-row">
-                    {this.renderSquare()}
-                    {this.renderSquare()}
-                    {this.renderSquare()}
+                    {this.renderSquare(1)}
+                    {this.renderSquare(2)}
+                    {this.renderSquare(3)}
                 </div>
                 <div className="board-row">
-                    {this.renderSquare()}
-                    {this.renderSquare()}
-                    {this.renderSquare()}
+                    {this.renderSquare(4)}
+                    {this.renderSquare(5)}
+                    {this.renderSquare(6)}
                 </div>
                 <div className="board-row">
-                    {this.renderSquare()}
-                    {this.renderSquare()}
-                    {this.renderSquare()}
+                    {this.renderSquare(7)}
+                    {this.renderSquare(8)}
+                    {this.renderSquare(9)}
                 </div>
             </div>
         )
