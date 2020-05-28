@@ -1,17 +1,61 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React  from "react";
+import ReactDOM from "react-dom";
+import "./index.css"
+class Square extends React.Component{
+    render(){
+        return (
+            <button className="square">                          
+            </button>
+        )
+    }
+}
+class Board extends React.Component{
+    renderSquare(){
+        return (
+            <Square/>
+        )
+    }
+    render(){
+        const status="next player: X";
+        return (
+            <div>
+                <div className="status">{status}</div>
+                <div className="board-row">
+                    {this.renderSquare()}
+                    {this.renderSquare()}
+                    {this.renderSquare()}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare()}
+                    {this.renderSquare()}
+                    {this.renderSquare()}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare()}
+                    {this.renderSquare()}
+                    {this.renderSquare()}
+                </div>
+            </div>
+        )
+    }
+}
 
+class Game extends React.Component{
+    render(){
+        return (
+            <div className="game">
+                <div className="game-board">
+                    <Board />
+                </div>
+                <div className="game-info">
+                    <div>{/* status */}</div>
+                    <ol>{/* TODO */}</ol>
+                </div>
+            </div>
+        )
+    }
+}
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+    <Game/>,
+    document.getElementById("root")
+)
