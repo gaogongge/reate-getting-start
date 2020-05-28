@@ -1,30 +1,32 @@
 import React  from "react";
 import ReactDOM from "react-dom";
 import "./index.css"
-class Square extends React.Component{
-    constructor(args){
-        /**
-         * 通过父类构造
-         */
-        super(args);  
-        this.state={
-            value:this.props.value /**构造时，创建状态state并存储props传递的参数 */
-        }
-    }
+class Square extends React.Component{   
     render(){        
         return (
-            <button className="square" onClick={()=>{this.setState({value:"X"})}}>
-                {/*当点击是，修改state状态 */}
-                {this.state.value} { /*使用state显示数据*/}                      
+            <button className="square" onClick={()=>{this.props.onClick()}}>
+                {/*当点击时，触发通过props接收的父组件的方法。 */}
+                {this.props.value} { /*使用props显示父组件中保存的数据*/}                   
             </button>
         )
     }
 }
 class Board extends React.Component{
+    constructor(args){
+        super(args);
+        this.state={
+            squares:Array(9).fill(null)
+        }
+    }
     renderSquare(index){
         return (
-            <Square value={index}/> 
-            /*这里通过props方式传递参数value*/
+            <Square 
+            value={this.state.squares[index]}
+            onClick={()=>{this.handleClick(index)}}
+            /> 
+            /*这里通过props方式传递参数value，
+            以及函数onClick；
+            此处子组件的展示数据部分就跟父组件的state数据绑定了*/
         )
     }
     render(){
@@ -33,22 +35,27 @@ class Board extends React.Component{
             <div>
                 <div className="status">{status}</div>
                 <div className="board-row">
+                    {this.renderSquare(0)}
                     {this.renderSquare(1)}
                     {this.renderSquare(2)}
-                    {this.renderSquare(3)}
                 </div>
                 <div className="board-row">
+                    {this.renderSquare(3)}
                     {this.renderSquare(4)}
                     {this.renderSquare(5)}
-                    {this.renderSquare(6)}
                 </div>
                 <div className="board-row">
+                    {this.renderSquare(6)}
                     {this.renderSquare(7)}
                     {this.renderSquare(8)}
-                    {this.renderSquare(9)}
                 </div>
             </div>
         )
+    }
+    handleClick(index){
+        const squares=this.state.squares.slice();
+        squares[index]="X";
+        this.setState({squares})
     }
 }
 
