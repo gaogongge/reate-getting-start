@@ -1,29 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css"
+// import {ComponentDemo} from "./demo"
 class Square extends React.Component {
     render() {
         return (
             <button className="square" onClick={() => { this.props.onClick() }}>
                 {/*当点击时，触发通过props接收的父组件的方法。 */}
-                {this.props.value} { /*使用props显示父组件中保存的数据*/}
+                {this.props.value} { /*使用props显示父组件中传递的数据*/}
             </button>
         )
     }
 }
 class Board extends React.Component {
-    constructor(args) {
-        super(args);
-        this.state = {
-            squares: Array(9).fill(null),
-            isNextX:true
-        }
-    }
     renderSquare(index) {
         return (
             <Square
-                value={this.state.squares[index]}
-                onClick={() => { this.handleClick(index) }}
+                value={this.props.value[index]}
+                onClick={() => { this.props.onClick(index) }}
             />
             /*这里通过props方式传递参数value，
             以及函数onClick；
@@ -31,17 +25,8 @@ class Board extends React.Component {
         )
     }
     render() {
-        let status = "next player: X";
-        //每次渲染页面之前，判断时候已经已经胜负已分；
-        let winner = calculateWinner(this.state.squares);
-        if (winner) {
-            status = "winner:" + winner;
-        } else {
-            status = "next player:" + (this.state.isNextX ? "X" : "O");
-        }
         return (
             <div>
-                <div className="status">{status}</div>
                 <div className="board-row">
                     {this.renderSquare(0)}
                     {this.renderSquare(1)}
@@ -60,10 +45,48 @@ class Board extends React.Component {
             </div>
         )
     }
+}
+
+class Game extends React.Component {
+    /**
+     * 构造的时候，初始化一个state
+     * @param {参数}} props 
+     */
+    constructor(props) {
+        super(props);
+        this.state = {
+            histroy: [{ squares: Array(9).fill(null) }],
+            squares: Array(9).fill(null),
+            isNextX: true
+        }
+    }
+    render() {
+        console.log("reload")
+        let status = "next player: X";
+        //每次渲染页面之前，判断时候已经已经胜负已分；
+        let winner = calculateWinner(this.state.squares);
+        if (winner) {
+            status = "winner:" + winner;
+        } else {
+            status = "next player:" + (this.state.isNextX ? "X" : "O");
+        }
+        return (
+            <div className="game">
+                <div className="game-board">
+                    <Board
+                        value={this.state.squares}
+                        onClick={(index) => { this.handleClick(index) }}
+                    />
+                </div>
+                <div className="game-info">
+                    <div>{status}</div>
+                    <ol>{/* TODO */}</ol>
+                </div>
+            </div>
+        )
+    }
     handleClick(index) {
-        //复制一份新的数据
-        const squares = this.state.squares.slice();
-        if(calculateWinner(squares)||squares[index]){
+        if (calculateWinner(this.state.squares) || this.state.squares[index]) {
             return;
             /**
              * 这是当已经有了胜者，封盘。点击不能再落子；
@@ -71,33 +94,26 @@ class Board extends React.Component {
              */
         }
         //把落子的情况记录到数组中；
+        let squares = this.state.squares.slice();
         squares[index] = this.state.isNextX ? "X" : "O";
-
-        //用新的数据替换旧数据，这里用完整替换的方式，是为了“时间穿梭”后续理解
+        //记录下一步谁改下：
+        //重点使用setstate 能够触发重新渲染，如果只是修改state内部属性，无法触发DOM渲染
         this.setState({
+            histroy: this.state.histroy.concat({squares}),
             squares,
-            isNextX:!this.state.isNextX
-        })
-    }
-}
-
-class Game extends React.Component {
-    render() {
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board />
-                </div>
-                <div className="game-info">
-                    <div>{/* status */}</div>
-                    <ol>{/* TODO */}</ol>
-                </div>
-            </div>
-        )
+            isNextX: !this.state.isNextX
+        });
+        // this.state={
+        //     histroy: this.state.histroy.concat({squares}),
+        //     squares,
+        //     isNextX: !this.state.isNextX
+        // }
     }
 }
 ReactDOM.render(
-    <Game />,
+    <div>
+        <Game/>
+    </div>,
     document.getElementById("root")
 )
 /**
