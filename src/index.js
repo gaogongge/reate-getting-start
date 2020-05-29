@@ -57,10 +57,23 @@ class Game extends React.Component {
         this.state = {
             histroy: [{ squares: Array(9).fill(null) }],
             squares: Array(9).fill(null),
-            isNextX: true
+            isNextX: true,
+            stepNumber:0
         }
     }
     render() {
+        /*
+            构造一个历史步骤的li集合
+        */
+        let histroyMap = this.state.histroy.map((value, index) => {
+            return (
+                <li key={index}>
+                    <button onClick={() => this.jumpTo(index)}>{index}</button>
+                </li>
+            )
+        })
+        console.log(histroyMap)
+
         console.log("reload")
         let status = "next player: X";
         //每次渲染页面之前，判断时候已经已经胜负已分；
@@ -80,7 +93,8 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{/* TODO */}</ol>
+                    <div>{this.state.stepNumber}</div>
+                    <ol>{histroyMap}</ol>
                 </div>
             </div>
         )
@@ -99,20 +113,23 @@ class Game extends React.Component {
         //记录下一步谁改下：
         //重点使用setstate 能够触发重新渲染，如果只是修改state内部属性，无法触发DOM渲染
         this.setState({
-            histroy: this.state.histroy.concat({squares}),
+            histroy: this.state.histroy.concat({ squares }),
             squares,
             isNextX: !this.state.isNextX
         });
-        // this.state={
-        //     histroy: this.state.histroy.concat({squares}),
-        //     squares,
-        //     isNextX: !this.state.isNextX
-        // }
+    }
+    jumpTo(index){
+        this.setState({
+            histroy:this.state.histroy,
+            squares:this.state.histroy[index].squares,
+            isNextX:this.state.isNextX,
+            stepNumber:index
+        })
     }
 }
 ReactDOM.render(
     <div>
-        <Game/>
+        <Game />
     </div>,
     document.getElementById("root")
 )
